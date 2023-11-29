@@ -1,0 +1,32 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up JDK and Maven
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Build and Package with Maven
+      run: mvn -B clean package
+
+    - name: Set up Docker
+      uses: actions/setup-docker@v2
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t ${{ secrets.ahmedmudassar11 }}/your-image-name:latest .
+        docker login -u ${{ secrets.DOCKERHUBUSERNAME }} -p ${{ secrets.DOCKERHUBTOKEN }}
+        docker push ${{ secrets.ahmedmudassar11 }}/your-image-name:latest
